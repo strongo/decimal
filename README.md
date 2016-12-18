@@ -13,13 +13,13 @@ package example
 import "github.com/strongo/decimal"
 
 func Example() {
-	var amount decimal.Money64p2; print(amount)  // 0
+	var amount decimal.Decimal64p2; print(amount)  // 0
 	
-	amount = decimal.NewMoney64p2(0, 43); print(amount)  // 0.43
-	amount = decimal.NewMoney64p2(1, 43); print(amount)  // 1.43
-	amount = decimal.NewMoney64p2(23, 00); print(amount)  // 23
-	amount, _ = decimal.ParseMoney64p2("2.34"); print(amount)  // 2.34
-	amount, _ = decimal.ParseMoney64p2("-3.42"); print(amount)  // -3.42
+	amount = decimal.NewDecimal64p2(0, 43); print(amount)  // 0.43
+	amount = decimal.NewDecimal64p2(1, 43); print(amount)  // 1.43
+	amount = decimal.NewDecimal64p2(23, 00); print(amount)  // 23
+	amount, _ = decimal.ParseDecimal64p2("2.34"); print(amount)  // 2.34
+	amount, _ = decimal.ParseDecimal64p2("-3.42"); print(amount)  // -3.42
 }
 ```
 

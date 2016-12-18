@@ -29,7 +29,7 @@ func TestNewDecimal64p2(t *testing.T) {
 }
 
 func TestParseDecimal64p2(t *testing.T) {
-	d, err := ParseMoney64p2("0")
+	d, err := ParseDecimal64p2("0")
 	if err != nil {
 		t.Error(err)
 	}
@@ -38,19 +38,19 @@ func TestParseDecimal64p2(t *testing.T) {
 		t.Errorf("Expected 0, got: %v", d)
 	}
 
-	if d, err = ParseMoney64p2("0.00"); err != nil {
+	if d, err = ParseDecimal64p2("0.00"); err != nil {
 		t.Error(err)
 	} else if d != 0 {
 		t.Errorf("Expected 0, got: %v", d)
 	}
 
-	if d, err = ParseMoney64p2("1.00"); err != nil {
+	if d, err = ParseDecimal64p2("1.00"); err != nil {
 		t.Error(err)
 	} else if d != NewDecimal64p2(1, 0) {
 		t.Errorf("Expected 1, got: %v", d)
 	}
 
-	if d, err = ParseMoney64p2("1.23"); err != nil {
+	if d, err = ParseDecimal64p2("1.23"); err != nil {
 		t.Error(err)
 	} else if d != NewDecimal64p2(1, 23) {
 		t.Errorf("Expected 1.23, got: %d", d)

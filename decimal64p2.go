@@ -65,7 +65,7 @@ func (d Decimal64p2) String() string {
 	}
 }
 
-func ParseMoney64p2(s string) (d Decimal64p2, err error) {
+func ParseDecimal64p2(s string) (d Decimal64p2, err error) {
 	f, err := strconv.ParseFloat(s, 64)
 	if err != nil {
 		return d, err
