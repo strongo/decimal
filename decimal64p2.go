@@ -7,11 +7,11 @@ import (
 	"strings"
 )
 
-type Money64p2 int64
+type Decimal64p2 int64
 
 const PRECISION_2 = 2
 
-func NewMoney64p2(intPart int64, decimalPart int8) Money64p2 {
+func NewDecimal64p2(intPart int64, decimalPart int8) Decimal64p2 {
 	if decimalPart < 0 {
 		panic("decimalPart < 0")
 	} else if decimalPart > 99 {
@@ -19,17 +19,26 @@ func NewMoney64p2(intPart int64, decimalPart int8) Money64p2 {
 	}
 
 	if intPart = intPart * 100; intPart >= 0 {
-		return Money64p2(intPart + int64(decimalPart))
+		return Decimal64p2(intPart + int64(decimalPart))
 	} else {
-		return Money64p2(intPart - int64(decimalPart))
+		return Decimal64p2(intPart - int64(decimalPart))
 	}
 }
 
-func (d Money64p2) IntPart() int64 {
+func NewDecimal64p2FromFloat64(f float64) Decimal64p2 {
+	intPart := round(f / 100) * 100
+	return Decimal64p2(intPart + round(toFixed(f - float64(intPart), PRECISION_2)*100))
+}
+
+func (d Decimal64p2) AsFloat64() float64 {
+	return float64(d)/100
+}
+
+func (d Decimal64p2) IntPart() int64 {
 	return int64(d/100)
 }
 
-func (d Money64p2) DecimalPart() int64 {
+func (d Decimal64p2) DecimalPart() int64 {
 	result := int64(d - d/100*100)
 	if result < 0 {
 		result *= -1
@@ -37,7 +46,7 @@ func (d Money64p2) DecimalPart() int64 {
 	return result
 }
 
-func (d Money64p2) String() string {
+func (d Decimal64p2) String() string {
 	if d == 0 {
 		return "0"
 	}
@@ -56,17 +65,12 @@ func (d Money64p2) String() string {
 	}
 }
 
-func ParseMoney64p2(s string) (d Money64p2, err error) {
+func ParseMoney64p2(s string) (d Decimal64p2, err error) {
 	f, err := strconv.ParseFloat(s, 64)
 	if err != nil {
 		return d, err
 	}
-	return FloatToMoney64p2(f), nil
-}
-
-func FloatToMoney64p2(f float64) Money64p2 {
-	intPart := round(f / 100) * 100
-	return Money64p2(intPart + round(toFixed(f - float64(intPart), PRECISION_2)*100))
+	return NewDecimal64p2FromFloat64(f), nil
 }
 
 func round(num float64) int {
@@ -78,15 +82,15 @@ func toFixed(num float64, precision int) float64 {
 	return float64(round(num * output)) / output
 }
 
-func (d *Money64p2) MarshalJSON() ([]byte, error) {
-	return json.Marshal(d.String())
+func (d Decimal64p2) MarshalJSON() ([]byte, error) {
+	return []byte(d.String()), nil
 }
 
-func (d *Money64p2) UnmarshalJSON(data []byte) error {
+func (d *Decimal64p2) UnmarshalJSON(data []byte) error {
 	var f float64
 	if err := json.Unmarshal(data, &f); err != nil {
 		return err
 	}
-	*d = FloatToMoney64p2(f)
+	*d = NewDecimal64p2FromFloat64(f)
 	return nil
 }
