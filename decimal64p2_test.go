@@ -169,3 +169,27 @@ func TestDecimal64p2_UnmarshalJSON(t *testing.T) {
 		t.Errorf("Expected -1.23, got %v", d2)
 	}
 }
+
+func TestDecimal64p2_Abs(t *testing.T) {
+	d1 := NewDecimal64p2FromFloat64(-3.24)
+	d2 := d1.Abs()
+
+	if d2 < 0 {
+		t.Error("Abs() returned < 0")
+	}
+
+	if d2.IntPart() != 3 {
+		t.Error("d2.IntPart() != 3")
+	}
+
+	if d2.DecimalPart() != 24 {
+		t.Error("d2.IntPart() != 24")
+	}
+
+	d1 = NewDecimal64p2FromFloat64(3.24)
+	d2 = d1.Abs()
+
+	if d1 != d2 {
+		t.Error("d1 != d2")
+	}
+}

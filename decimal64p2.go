@@ -94,3 +94,10 @@ func (d *Decimal64p2) UnmarshalJSON(data []byte) error {
 	*d = NewDecimal64p2FromFloat64(f)
 	return nil
 }
+
+func (d Decimal64p2) Abs() Decimal64p2 {
+	if d < 0 {
+		return d * -1
+	}
+	return d
+}
