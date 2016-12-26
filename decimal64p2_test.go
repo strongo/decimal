@@ -121,6 +121,9 @@ func TestNewDecimal64p2FromFloat64(t *testing.T) {
 	if d = NewDecimal64p2FromFloat64(-1.23); int64(d) != -123 {
 		t.Errorf("Expected -123, got: %d", d)
 	}
+	if d = NewDecimal64p2FromFloat64(2333.33); int64(d) != 233333  {
+		t.Errorf("Expected 233333, got: %d", d)
+	}
 }
 
 func TestDecimal64p2_AsFloat64(t *testing.T) {
