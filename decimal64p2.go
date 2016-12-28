@@ -26,8 +26,7 @@ func NewDecimal64p2(intPart int64, decimalPart int8) Decimal64p2 {
 }
 
 func NewDecimal64p2FromFloat64(f float64) Decimal64p2 {
-	intPart := round(f * 100)
-	return Decimal64p2(intPart)
+	return Decimal64p2(round(f * 100))
 }
 
 func (d Decimal64p2) AsFloat64() float64 {
