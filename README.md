@@ -1,8 +1,10 @@
 # Package `github.com/strongo/decimal`
 
-Decimal 64 bit implementation to represent money values in GoLang. Based on int64. Supports JSON (un)marshalling.
+[![Build Status](https://travis-ci.org/strongo/decimal.svg?branch=master)](https://travis-ci.org/strongo/decimal)
 
-At the moment provides just a single type `Decimal64p2` with precision of 2 digits after point.
+Decimal 64 bit numbers implementation to represent money values in GoLang. Based on int64. Supports JSON (un)marshalling.
+
+At the moment provides just a single type `Decimal64p2` with fixed precision of 2 digits after point.
 In simple words it stores value as 64 bits integer amount of cents.
 
 The code has <b>100% unit tests coverage</b>.
