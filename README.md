@@ -1,6 +1,6 @@
 # Package `github.com/strongo/decimal`
 
-Decimal 64 bit implementation to represent money values in GoLang. Based on int64.
+Decimal 64 bit implementation to represent money values in GoLang. Based on int64. Supports JSON (un)marshalling.
 
 At the moment provides just a single type `Decimal64p2` with precision of 2 digits after point.
 In simple words it stores value as 64 bits integer amount of cents.
@@ -31,4 +31,7 @@ This package originally was developed for <a href="https://debtstrcker.io/"><b>D
 * Compact
 * No precision issues with storing values like `0.10`
 * By storing with precision to cents there is no ambiguity with rounding. E.g. if you split $10 between 3 persons the amounts will be $3.33, $3.33 & $3.3<b>4</b>.
+
+## <a href="https://github.com/strongo/decimal/blob/master/LICENSE">MIT License</a>
+Free to use without restrictions. If cloned please keep links to <a href="https://github.com/strongo/decimal">https://github.com/strongo/decimal</a> and to <a href="https://debtstracker.io/">https://debtstracker.io/</a>.
 
