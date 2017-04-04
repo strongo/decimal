@@ -1,11 +1,12 @@
-# decimal
-Decimal 64 bit implementation to represent money values in GoLang.
+# Package `github.com/strongo/decimal`
 
-Based on int64 with precision of 2 digits after point.
+Decimal 64 bit implementation to represent money values in GoLang. Based on int64.
 
-In simple words it stores value as integer amount of cents.
+At the moment provides just a single type `Decimal64p2` with precision of 2 digits after point.
+In simple words it stores value as 64 bits integer amount of cents.
 
 E.g. `1.43` will be stored as `int64(143)` but when rendered as string will be represented as `"1.43"`.
+
  
 ```go
 package example
@@ -17,10 +18,17 @@ func Example() {
 	
 	amount = decimal.NewDecimal64p2(0, 43); print(amount)  // 0.43
 	amount = decimal.NewDecimal64p2(1, 43); print(amount)  // 1.43
-	amount = decimal.NewDecimal64p2(23, 00); print(amount)  // 23
+	amount = decimal.NewDecimal64p2FromFloat64(23.100001); print(amount)  // 23.10
 	amount, _ = decimal.ParseDecimal64p2("2.34"); print(amount)  // 2.34
 	amount, _ = decimal.ParseDecimal64p2("-3.42"); print(amount)  // -3.42
 }
 ```
 
-This package originally was developed for <a href="https://debtstrcker.io/">DebtsTracker.io</a> - an app to track your personal debts. 
+This package originally was developed for <a href="https://debtstrcker.io/"><b>DebtsTracker.io</b></a> - a mobile app & chat bots to <b>split bills & track your debts</b>.
+
+## Reasoning
+* Fast
+* Compact
+* No precision issues with storing values like `0.10`
+* By storing with precision to cents there is no ambiguity with rounding. E.g. if you split $10 between 3 persons the amounts will be $3.33, $3.33 & $3.3<b>4</b>.
+
