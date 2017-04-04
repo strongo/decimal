@@ -29,7 +29,7 @@ func NewDecimal64p2(intPart int64, decimalPart int8) Decimal64p2 {
 		}
 	}
 
-	return Decimal64p2(intPart * 100 + int64(decimalPart))
+	return Decimal64p2(intPart*100 + int64(decimalPart))
 }
 
 func NewDecimal64p2FromFloat64(f float64) Decimal64p2 {
@@ -37,11 +37,11 @@ func NewDecimal64p2FromFloat64(f float64) Decimal64p2 {
 }
 
 func (d Decimal64p2) AsFloat64() float64 {
-	return float64(d)/100
+	return float64(d) / 100
 }
 
 func (d Decimal64p2) IntPart() int64 {
-	return int64(d/100)
+	return int64(d / 100)
 }
 
 func (d Decimal64p2) DecimalPart() int64 {
@@ -62,7 +62,7 @@ func (d Decimal64p2) String() string {
 		sign = "-"
 		i *= -1
 	}
-	s := strconv.FormatInt(i, 10);
+	s := strconv.FormatInt(i, 10)
 	if i <= 9 {
 		return sign + "0.0" + s
 	} else if i <= 99 {
@@ -93,7 +93,7 @@ func round(num float64) int {
 
 func toFixed(num float64, precision int) float64 {
 	output := math.Pow(10, float64(precision))
-	return float64(round(num * output)) / output
+	return float64(round(num*output)) / output
 }
 
 func (d Decimal64p2) MarshalJSON() ([]byte, error) {
