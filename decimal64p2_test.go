@@ -1,8 +1,8 @@
 package decimal
 
 import (
-	"testing"
 	"encoding/json"
+	"testing"
 )
 
 func TestNewDecimal64p2(t *testing.T) {
@@ -73,7 +73,6 @@ func TestParseDecimal64p2(t *testing.T) {
 		t.Errorf("Expected 0.03, got: %v", d.String())
 	}
 }
-
 
 func TestDecimal64p2_String(t *testing.T) {
 	m := NewDecimal64p2(0, 0)
@@ -148,7 +147,7 @@ func TestNewDecimal64p2FromFloat64(t *testing.T) {
 	if d = NewDecimal64p2FromFloat64(-1.23); int64(d) != -123 {
 		t.Errorf("Expected -123, got: %d", d)
 	}
-	if d = NewDecimal64p2FromFloat64(2333.33); int64(d) != 233333  {
+	if d = NewDecimal64p2FromFloat64(2333.33); int64(d) != 233333 {
 		t.Errorf("Expected 233333, got: %d", d)
 	}
 }
@@ -225,33 +224,37 @@ func TestDecimal64p2_Abs(t *testing.T) {
 }
 
 func TestNewDecimal64p2_panicPositiveNegative(t *testing.T) {
-	defer func(){
+	defer func() {
 		if r := recover(); r == nil {
 			t.Error("No panic")
-		}	}()
+		}
+	}()
 	NewDecimal64p2(1, -1)
 }
 
 func TestNewDecimal64p2_panicNegativePositive(t *testing.T) {
-	defer func(){
+	defer func() {
 		if r := recover(); r == nil {
 			t.Error("No panic")
-		}	}()
+		}
+	}()
 	NewDecimal64p2(-1, 1)
 }
 
 func TestNewDecimal64p2_panicDecimalGreaterPlus99(t *testing.T) {
-	defer func(){
+	defer func() {
 		if r := recover(); r == nil {
 			t.Error("No panic")
-		}	}()
+		}
+	}()
 	NewDecimal64p2(1, 100)
 }
 
 func TestNewDecimal64p2_panicDecimalLessMinus99(t *testing.T) {
-	defer func(){
+	defer func() {
 		if r := recover(); r == nil {
 			t.Error("No panic")
-		}	}()
+		}
+	}()
 	NewDecimal64p2(-1, -100)
 }
