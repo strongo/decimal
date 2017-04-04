@@ -5,6 +5,8 @@ Decimal 64 bit implementation to represent money values in GoLang. Based on int6
 At the moment provides just a single type `Decimal64p2` with precision of 2 digits after point.
 In simple words it stores value as 64 bits integer amount of cents.
 
+The code has <b>100% unit tests coverage</b>.
+
 E.g. `1.43` will be stored as `int64(143)` but when rendered as string will be represented as `"1.43"`.
 
  
