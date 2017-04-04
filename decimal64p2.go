@@ -12,17 +12,24 @@ type Decimal64p2 int64
 const PRECISION_2 = 2
 
 func NewDecimal64p2(intPart int64, decimalPart int8) Decimal64p2 {
-	if decimalPart < 0 {
-		panic("decimalPart < 0")
-	} else if decimalPart > 99 {
-		panic("decimalPart > 99")
+	switch {
+	case decimalPart > 0:
+		if decimalPart > 99 {
+			panic("decimalPart > 99")
+		}
+		if intPart < 0 {
+			panic("decimalPart > 0 && intPart < 0")
+		}
+	case decimalPart < 0:
+		if decimalPart < -99 {
+			panic("decimalPart < -99")
+		}
+		if intPart > 0 {
+			panic("decimalPart < 0 && intPart > 0")
+		}
 	}
 
-	if intPart = intPart * 100; intPart >= 0 {
-		return Decimal64p2(intPart + int64(decimalPart))
-	} else {
-		return Decimal64p2(intPart - int64(decimalPart))
-	}
+	return Decimal64p2(intPart * 100 + int64(decimalPart))
 }
 
 func NewDecimal64p2FromFloat64(f float64) Decimal64p2 {
@@ -49,17 +56,25 @@ func (d Decimal64p2) String() string {
 	if d == 0 {
 		return "0"
 	}
-	s := strconv.FormatInt(int64(d), 10);
-	if len(s) <= PRECISION_2 {
-		return "0." + s
+	var sign string
+	i := int64(d)
+	if i < 0 {
+		sign = "-"
+		i *= -1
+	}
+	s := strconv.FormatInt(i, 10);
+	if i <= 9 {
+		return sign + "0.0" + s
+	} else if i <= 99 {
+		return sign + "0." + s
 	} else {
 		var left, right string
-		left = s[:len(s) - PRECISION_2]
-		right = s[len(s) - PRECISION_2:]
+		left = s[:len(s)-PRECISION_2]
+		right = s[len(s)-PRECISION_2:]
 		if right == "00" {
-			return left
+			return sign + left
 		} else {
-			return strings.Join([]string{left, right}, ".")
+			return sign + strings.Join([]string{left, right}, ".")
 		}
 	}
 }

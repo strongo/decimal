@@ -23,8 +23,11 @@ func TestNewDecimal64p2(t *testing.T) {
 	if d = NewDecimal64p2(1, 23); int64(d) != 123 {
 		t.Errorf("Expected 123, got: %d", d)
 	}
-	if d = NewDecimal64p2(-1, 23); int64(d) != -123 {
+	if d = NewDecimal64p2(-1, -23); int64(d) != -123 {
 		t.Errorf("Expected -123, got: %d", d)
+	}
+	if d = NewDecimal64p2(0, -23); int64(d) != -23 {
+		t.Errorf("Expected -23, got: %d", d)
 	}
 }
 
@@ -42,18 +45,32 @@ func TestParseDecimal64p2(t *testing.T) {
 		t.Error(err)
 	} else if d != 0 {
 		t.Errorf("Expected 0, got: %v", d)
+	} else if d.String() != "0" {
+		t.Errorf("Expected 0, got: %v", d.String())
 	}
 
 	if d, err = ParseDecimal64p2("1.00"); err != nil {
 		t.Error(err)
 	} else if d != NewDecimal64p2(1, 0) {
 		t.Errorf("Expected 1, got: %v", d)
+	} else if d.String() != "1" {
+		t.Errorf("Expected 1, got: %v", d.String())
 	}
 
 	if d, err = ParseDecimal64p2("1.23"); err != nil {
 		t.Error(err)
 	} else if d != NewDecimal64p2(1, 23) {
 		t.Errorf("Expected 1.23, got: %d", d)
+	} else if d.String() != "1.23" {
+		t.Errorf("Expected 1.23, got: %v", d.String())
+	}
+
+	if d, err = ParseDecimal64p2("0.03"); err != nil {
+		t.Error(err)
+	} else if d != NewDecimal64p2(0, 3) {
+		t.Errorf("Expected 0.03, got: %d", d)
+	} else if d.String() != "0.03" {
+		t.Errorf("Expected 0.03, got: %v", d.String())
 	}
 }
 
@@ -63,6 +80,11 @@ func TestDecimal64p2_String(t *testing.T) {
 	s := m.String()
 	if s != "0" {
 		t.Errorf("Expected '0', got '%v'", s)
+	}
+
+	s = NewDecimal64p2(0, 3).String()
+	if s != "0.03" {
+		t.Errorf("Expected '0.03', got '%v'", s)
 	}
 
 	s = NewDecimal64p2(0, 23).String()
@@ -80,9 +102,14 @@ func TestDecimal64p2_String(t *testing.T) {
 		t.Errorf("Expected '45', got '%v'", s)
 	}
 
-	s = NewDecimal64p2(-45, 67).String()
+	s = NewDecimal64p2(-45, -67).String()
 	if s != "-45.67" {
 		t.Errorf("Expected '-45.67', got '%v'", s)
+	}
+
+	s = NewDecimal64p2FromFloat64(-0.03).String()
+	if s != "-0.03" {
+		t.Errorf("Expected '-0.03', got '%v'", s)
 	}
 }
 
@@ -92,7 +119,7 @@ func TestDecimal64p2_IntPart(t *testing.T) {
 		t.Error("m.IntPart() != 23")
 	}
 
-	m = NewDecimal64p2(-23, 45)
+	m = NewDecimal64p2(-23, -45)
 	if m.IntPart() != -23 {
 		t.Error("m.IntPart() != -23")
 	}
@@ -104,7 +131,7 @@ func TestDecimal64p2_DecimalPart(t *testing.T) {
 		t.Errorf("m.DecimalPart() != 45, got: %v", m.DecimalPart())
 	}
 
-	m = NewDecimal64p2(-23, 45)
+	m = NewDecimal64p2(-23, -45)
 	if m.DecimalPart() != 45 {
 		t.Errorf("m.DecimalPart() != 45, got: %v", m.DecimalPart())
 	}
@@ -149,7 +176,7 @@ func TestDecimal64p2_MarshalJSON(t *testing.T) {
 		t.Errorf("Expected '%v', got: '%v'", d1.String(), string(s))
 	}
 
-	d1 = NewDecimal64p2(-1, 23)
+	d1 = NewDecimal64p2(-1, -23)
 	if s, err := json.Marshal(d1); err != nil {
 		t.Error(err)
 	} else if string(s) != d1.String() {
@@ -195,4 +222,36 @@ func TestDecimal64p2_Abs(t *testing.T) {
 	if d1 != d2 {
 		t.Error("d1 != d2")
 	}
+}
+
+func TestNewDecimal64p2_panicPositiveNegative(t *testing.T) {
+	defer func(){
+		if r := recover(); r == nil {
+			t.Error("No panic")
+		}	}()
+	NewDecimal64p2(1, -1)
+}
+
+func TestNewDecimal64p2_panicNegativePositive(t *testing.T) {
+	defer func(){
+		if r := recover(); r == nil {
+			t.Error("No panic")
+		}	}()
+	NewDecimal64p2(-1, 1)
+}
+
+func TestNewDecimal64p2_panicDecimalGreaterPlus99(t *testing.T) {
+	defer func(){
+		if r := recover(); r == nil {
+			t.Error("No panic")
+		}	}()
+	NewDecimal64p2(1, 100)
+}
+
+func TestNewDecimal64p2_panicDecimalLessMinus99(t *testing.T) {
+	defer func(){
+		if r := recover(); r == nil {
+			t.Error("No panic")
+		}	}()
+	NewDecimal64p2(-1, -100)
 }
