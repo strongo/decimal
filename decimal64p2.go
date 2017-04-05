@@ -7,10 +7,13 @@ import (
 	"strings"
 )
 
+// Decimal number implementation based on int64 with 2 digits after point fixed precision
 type Decimal64p2 int64
 
+// Defines fixed precision with 2 digits after point
 const PRECISION_2 = 2
 
+// Creates Decimal64p2 from integer and decimal parts
 func NewDecimal64p2(intPart int64, decimalPart int8) Decimal64p2 {
 	switch {
 	case decimalPart > 0:
@@ -32,18 +35,22 @@ func NewDecimal64p2(intPart int64, decimalPart int8) Decimal64p2 {
 	return Decimal64p2(intPart*100 + int64(decimalPart))
 }
 
+// Creates Decimal64p2 from float64
 func NewDecimal64p2FromFloat64(f float64) Decimal64p2 {
 	return Decimal64p2(round(f * 100))
 }
 
+// Converts to float64
 func (d Decimal64p2) AsFloat64() float64 {
 	return float64(d) / 100
 }
 
+// Returns integer part of the decimal
 func (d Decimal64p2) IntPart() int64 {
 	return int64(d / 100)
 }
 
+// Returns part after point
 func (d Decimal64p2) DecimalPart() int64 {
 	result := int64(d - d/100*100)
 	if result < 0 {
@@ -52,6 +59,7 @@ func (d Decimal64p2) DecimalPart() int64 {
 	return result
 }
 
+// Render to string. If integer the .00 is NOT rendered.
 func (d Decimal64p2) String() string {
 	if d == 0 {
 		return "0"
@@ -67,18 +75,18 @@ func (d Decimal64p2) String() string {
 		return sign + "0.0" + s
 	} else if i <= 99 {
 		return sign + "0." + s
-	} else {
-		var left, right string
-		left = s[:len(s)-PRECISION_2]
-		right = s[len(s)-PRECISION_2:]
-		if right == "00" {
-			return sign + left
-		} else {
-			return sign + strings.Join([]string{left, right}, ".")
-		}
 	}
+
+	var left, right string
+	left = s[:len(s)-PRECISION_2]
+	right = s[len(s)-PRECISION_2:]
+	if right == "00" {
+		return sign + left
+	}
+	return sign + strings.Join([]string{left, right}, ".")
 }
 
+// Creates Decimal64p2 from a string
 func ParseDecimal64p2(s string) (d Decimal64p2, err error) {
 	f, err := strconv.ParseFloat(s, 64)
 	if err != nil {
@@ -96,10 +104,12 @@ func toFixed(num float64, precision int) float64 {
 	return float64(round(num*output)) / output
 }
 
+// Marshals decimal to JSON
 func (d Decimal64p2) MarshalJSON() ([]byte, error) {
 	return []byte(d.String()), nil
 }
 
+// Marshals JSON to decimal
 func (d *Decimal64p2) UnmarshalJSON(data []byte) error {
 	var f float64
 	if err := json.Unmarshal(data, &f); err != nil {
@@ -109,6 +119,7 @@ func (d *Decimal64p2) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// Return absolute value for the decimal
 func (d Decimal64p2) Abs() Decimal64p2 {
 	if d < 0 {
 		return d * -1
