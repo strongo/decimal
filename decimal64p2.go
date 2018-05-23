@@ -11,7 +11,14 @@ import (
 type Decimal64p2 int64
 
 // PRECISION_2 defines fixed precision with 2 digits after point
-const PRECISION_2 = 2
+const (
+	PRECISION_2 = 2
+	POINT_PART_2 = 100
+)
+
+func FromInt(intPart int) Decimal64p2 {
+	return Decimal64p2(intPart * POINT_PART_2)
+}
 
 // NewDecimal64p2 creates Decimal64p2 from integer and decimal parts
 func NewDecimal64p2(intPart int64, decimalPart int8) Decimal64p2 {
@@ -32,27 +39,27 @@ func NewDecimal64p2(intPart int64, decimalPart int8) Decimal64p2 {
 		}
 	}
 
-	return Decimal64p2(intPart*100 + int64(decimalPart))
+	return Decimal64p2(intPart*POINT_PART_2 + int64(decimalPart))
 }
 
 // NewDecimal64p2FromFloat64 creates Decimal64p2 from float64
 func NewDecimal64p2FromFloat64(f float64) Decimal64p2 {
-	return Decimal64p2(round(f * 100))
+	return Decimal64p2(round(f * POINT_PART_2))
 }
 
 // AsFloat64 converts decimal to float64
 func (d Decimal64p2) AsFloat64() float64 {
-	return float64(d) / 100
+	return float64(d) / POINT_PART_2
 }
 
 // IntPart returns integer part of the decimal
 func (d Decimal64p2) IntPart() int64 {
-	return int64(d / 100)
+	return int64(d / POINT_PART_2)
 }
 
 // DecimalPart returns part after point
 func (d Decimal64p2) DecimalPart() int64 {
-	result := int64(d - d/100*100)
+	result := int64(d - d/POINT_PART_2*POINT_PART_2)
 	if result < 0 {
 		result *= -1
 	}
