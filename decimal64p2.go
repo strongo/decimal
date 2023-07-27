@@ -10,14 +10,14 @@ import (
 // Decimal64p2 is a decimal number implementation based on int64 with 2 digits after point fixed precision
 type Decimal64p2 int64
 
-// PRECISION_2 defines fixed precision with 2 digits after point
+// Defines fixed precision with 2 digits after point
 const (
-	PRECISION_2 = 2
-	POINT_PART_2 = 100
+	precision2 = 2
+	pointPart2 = 100
 )
 
-func FromInt(intPart int) Decimal64p2 {
-	return Decimal64p2(intPart * POINT_PART_2)
+func NewDecimal64p2FromInt(intPart int) Decimal64p2 {
+	return Decimal64p2(intPart * pointPart2)
 }
 
 // NewDecimal64p2 creates Decimal64p2 from integer and decimal parts
@@ -39,27 +39,27 @@ func NewDecimal64p2(intPart int64, decimalPart int8) Decimal64p2 {
 		}
 	}
 
-	return Decimal64p2(intPart*POINT_PART_2 + int64(decimalPart))
+	return Decimal64p2(intPart*pointPart2 + int64(decimalPart))
 }
 
 // NewDecimal64p2FromFloat64 creates Decimal64p2 from float64
 func NewDecimal64p2FromFloat64(f float64) Decimal64p2 {
-	return Decimal64p2(round(f * POINT_PART_2))
+	return Decimal64p2(round(f * pointPart2))
 }
 
 // AsFloat64 converts decimal to float64
 func (d Decimal64p2) AsFloat64() float64 {
-	return float64(d) / POINT_PART_2
+	return float64(d) / pointPart2
 }
 
 // IntPart returns integer part of the decimal
 func (d Decimal64p2) IntPart() int64 {
-	return int64(d / POINT_PART_2)
+	return int64(d / pointPart2)
 }
 
 // DecimalPart returns part after point
 func (d Decimal64p2) DecimalPart() int64 {
-	result := int64(d - d/POINT_PART_2*POINT_PART_2)
+	result := int64(d - d/pointPart2*pointPart2)
 	if result < 0 {
 		result *= -1
 	}
@@ -85,8 +85,8 @@ func (d Decimal64p2) String() string {
 	}
 
 	var left, right string
-	left = s[:len(s)-PRECISION_2]
-	right = s[len(s)-PRECISION_2:]
+	left = s[:len(s)-precision2]
+	right = s[len(s)-precision2:]
 	if right == "00" {
 		return sign + left
 	}
@@ -106,10 +106,10 @@ func round(num float64) int {
 	return int(num + math.Copysign(0.5, num))
 }
 
-func toFixed(num float64, precision int) float64 {
-	output := math.Pow(10, float64(precision))
-	return float64(round(num*output)) / output
-}
+//func toFixed(num float64, precision int) float64 {
+//	output := math.Pow(10, float64(precision))
+//	return float64(round(num*output)) / output
+//}
 
 // MarshalJSON marshals decimal to JSON
 func (d Decimal64p2) MarshalJSON() ([]byte, error) {
