@@ -2,7 +2,7 @@
 
 [![Go CI](https://github.com/strongo/decimal/actions/workflows/ci.yml/badge.svg)](https://github.com/strongo/decimal/actions/workflows/ci.yml)
 [![GoDoc](https://godoc.org/github.com/strongo/decimal?status.svg)](https://godoc.org/github.com/strongo/decimal)
-[![Go Report Card](https://goreportcard.com/badge/github.com/strongo/decimal)](https://goreportcard.com/report/github.com/strongo/decimal)
+[![Go Report](https://goreportcard.com/badge/github.com/strongo/decimal)](https://goreportcard.com/report/github.com/strongo/decimal)
 
 Decimal 64 bit numbers implementation to represent money values in GoLang. Based on int64. Supports JSON (un)marshalling.
 
