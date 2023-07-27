@@ -1,6 +1,6 @@
 # Package `github.com/strongo/decimal`
 
-[![Build Status](https://travis-ci.org/strongo/decimal.svg?branch=master)](https://travis-ci.org/strongo/decimal)
+[![Go CI](https://github.com/strongo/decimal/actions/workflows/ci.yml/badge.svg)](https://github.com/strongo/decimal/actions/workflows/ci.yml)
 [![GoDoc](https://godoc.org/github.com/strongo/decimal?status.svg)](https://godoc.org/github.com/strongo/decimal)
 [![Go Report Card](https://goreportcard.com/badge/github.com/strongo/decimal)](https://goreportcard.com/report/github.com/strongo/decimal)
 
