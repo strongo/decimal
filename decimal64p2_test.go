@@ -165,20 +165,15 @@ func TestNewDecimal64p2FromInt(t *testing.T) {
 	} else if d.DecimalPart() != 0 {
 		t.Errorf("Decimal part expected to be 0, got: %d", d.DecimalPart())
 	}
-	if d = NewDecimal64p2FromInt(123); int64(d) != 123 {
-		t.Errorf("Expected 123, got: %d", d)
-	} else if d.DecimalPart() != 23 {
-		t.Errorf("Decimal part expected to be 23, got: %d", d.DecimalPart())
+	if d = NewDecimal64p2FromInt(123); int64(d) != 12300 {
+		t.Errorf("Expected 12345, got: %d", d)
+	} else if dp := d.DecimalPart(); dp != 0 {
+		t.Errorf("Decimal part expected to be 0, got: %d", dp)
 	}
-	if d = NewDecimal64p2FromInt(-123); int64(d) != -123 {
-		t.Errorf("Expected -123, got: %d", d)
-	} else if d.DecimalPart() != 23 {
-		t.Errorf("Decimal part expected to be 23, got: %d", d.DecimalPart())
-	}
-	if d = NewDecimal64p2FromInt(233333); int64(d) != 233333 {
-		t.Errorf("Expected 233333, got: %d", d)
-	} else if d.DecimalPart() != 33 {
-		t.Errorf("Decimal part expected to be 33, got: %d", d.DecimalPart())
+	if d = NewDecimal64p2FromInt(-123); int64(d) != -12300 {
+		t.Errorf("Expected -12300, got: %d", d)
+	} else if dp := d.DecimalPart(); dp != 0 {
+		t.Errorf("Decimal part expected to be 0, got: %d", dp)
 	}
 }
 
