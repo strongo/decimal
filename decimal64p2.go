@@ -16,6 +16,7 @@ const (
 	pointPart2 = 100
 )
 
+// NewDecimal64p2FromInt creates Decimal64p2 from integer
 func NewDecimal64p2FromInt(intPart int) Decimal64p2 {
 	return Decimal64p2(intPart * pointPart2)
 }
