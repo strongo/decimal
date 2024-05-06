@@ -24,5 +24,3 @@ jobs:
     uses: strongo/go-ci-action/.github/workflows/workflow.yml@main
     secrets:
       gh_token: ${{ secrets.GITHUB_TOKEN }}
-    with:
-      disable-version-bumping: true
