@@ -45,7 +45,8 @@ func TestParseDecimal64p2(t *testing.T) {
 		t.Error(err)
 	} else if d != 0 {
 		t.Errorf("Expected 0, got: %v", d)
-	} else if d.String() != "0" {
+	} else if //goland:noinspection GoDfaNilDereference
+	d.String() != "0" {
 		t.Errorf("Expected 0, got: %v", d.String())
 	}
 
@@ -210,6 +211,14 @@ func TestDecimal64p2_MarshalJSON(t *testing.T) {
 
 func TestDecimal64p2_UnmarshalJSON(t *testing.T) {
 	var d2 Decimal64p2
+
+	if err := json.Unmarshal([]byte("1234"), &d2); err != nil {
+		t.Error(err)
+	} else if intPart := d2.IntPart(); intPart != 12 {
+		t.Errorf("Expected 12 for int part, got %d: %s", intPart, d2.String())
+	} else if decimalPart := d2.DecimalPart(); decimalPart != 34 {
+		t.Errorf("Expected 0 for decimal part, got %d: %s", decimalPart, d2.String())
+	}
 
 	if err := json.Unmarshal([]byte("1.23"), &d2); err != nil {
 		t.Error(err)

@@ -3,6 +3,7 @@ package decimal
 import (
 	"encoding/json"
 	"math"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -117,13 +118,21 @@ func (d Decimal64p2) MarshalJSON() ([]byte, error) {
 	return []byte(d.String()), nil
 }
 
-// UnmarshalJSON unmarshals JSON to decimal
+// UnmarshalJSON deserializes JSON to decimal
 func (d *Decimal64p2) UnmarshalJSON(data []byte) error {
-	var f float64
-	if err := json.Unmarshal(data, &f); err != nil {
-		return err
+	if slices.Contains(data, '.') {
+		var f float64
+		if err := json.Unmarshal(data, &f); err != nil {
+			return err
+		}
+		*d = NewDecimal64p2FromFloat64(f)
+	} else {
+		var f int64
+		if err := json.Unmarshal(data, &f); err != nil {
+			return err
+		}
+		*d = Decimal64p2(f)
 	}
-	*d = NewDecimal64p2FromFloat64(f)
 	return nil
 }
 
