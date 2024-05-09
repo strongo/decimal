@@ -197,15 +197,15 @@ func TestDecimal64p2_MarshalJSON(t *testing.T) {
 	d1 = NewDecimal64p2(1, 23)
 	if s, err := json.Marshal(d1); err != nil {
 		t.Error(err)
-	} else if string(s) != d1.String() {
-		t.Errorf("Expected '%v', got: '%v'", d1.String(), string(s))
+	} else if expected := "123"; string(s) != expected {
+		t.Errorf("Expected '%v', got: '%v'", expected, string(s))
 	}
 
 	d1 = NewDecimal64p2(-1, -23)
 	if s, err := json.Marshal(d1); err != nil {
 		t.Error(err)
-	} else if string(s) != d1.String() {
-		t.Errorf("Expected '%v', got: '%v'", d1.String(), string(s))
+	} else if expected := "-123"; string(s) != expected {
+		t.Errorf("Expected '%v', got: '%v'", expected, string(s))
 	}
 }
 

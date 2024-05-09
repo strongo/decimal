@@ -115,7 +115,7 @@ func round(num float64) int {
 
 // MarshalJSON marshals decimal to JSON
 func (d Decimal64p2) MarshalJSON() ([]byte, error) {
-	return []byte(d.String()), nil
+	return []byte(strconv.FormatInt(int64(d), 10)), nil
 }
 
 // UnmarshalJSON deserializes JSON to decimal
