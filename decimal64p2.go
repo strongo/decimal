@@ -1,9 +1,8 @@
 package decimal
 
 import (
-	"encoding/json"
+	"fmt"
 	"math"
-	"slices"
 	"strconv"
 	"strings"
 )
@@ -74,12 +73,12 @@ func (d Decimal64p2) String() string {
 		return "0"
 	}
 	var sign string
-	i := int64(d)
-	if i < 0 {
+	i := uint64(d)
+	if d < 0 {
 		sign = "-"
-		i *= -1
+		i = uint64(-(int64(d) + 1)) + 1
 	}
-	s := strconv.FormatInt(i, 10)
+	s := strconv.FormatUint(i, 10)
 	if i <= 9 {
 		return sign + "0.0" + s
 	} else if i <= 99 {
@@ -97,11 +96,64 @@ func (d Decimal64p2) String() string {
 
 // ParseDecimal64p2 creates Decimal64p2 from a string
 func ParseDecimal64p2(s string) (d Decimal64p2, err error) {
-	f, err := strconv.ParseFloat(s, 64)
-	if err != nil {
-		return d, err
+	original := s
+	negative := false
+	if len(s) > 0 && (s[0] == '-' || s[0] == '+') {
+		negative = s[0] == '-'
+		s = s[1:]
 	}
-	return NewDecimal64p2FromFloat64(f), nil
+	invalid := func() (Decimal64p2, error) {
+		return 0, fmt.Errorf("invalid decimal %q", original)
+	}
+	if len(s) == 0 {
+		return invalid()
+	}
+	limit := uint64(math.MaxInt64)
+	if negative {
+		limit++
+	}
+	var cents uint64
+	wholeDigits, fractionDigits := 0, 0
+	point := false
+	for i := 0; i < len(s); i++ {
+		c := s[i]
+		if c == '.' && !point && wholeDigits > 0 {
+			point = true
+			continue
+		}
+		if c < '0' || c > '9' {
+			return invalid()
+		}
+		if point {
+			fractionDigits++
+			if fractionDigits > precision2 {
+				return invalid()
+			}
+		} else {
+			wholeDigits++
+		}
+		digit := uint64(c - '0')
+		if cents > (limit-digit)/10 {
+			return 0, fmt.Errorf("decimal %q overflows int64 cents", original)
+		}
+		cents = cents*10 + digit
+	}
+	if wholeDigits == 0 || (point && fractionDigits == 0) {
+		return invalid()
+	}
+	for ; fractionDigits < precision2; fractionDigits++ {
+		if cents > limit/10 {
+			return 0, fmt.Errorf("decimal %q overflows int64 cents", original)
+		}
+		cents *= 10
+	}
+	if negative {
+		if cents == uint64(math.MaxInt64)+1 {
+			return Decimal64p2(math.MinInt64), nil
+		}
+		return Decimal64p2(-int64(cents)), nil
+	}
+	return Decimal64p2(cents), nil
 }
 
 func round(num float64) int {
@@ -120,19 +172,19 @@ func (d Decimal64p2) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes JSON to decimal
 func (d *Decimal64p2) UnmarshalJSON(data []byte) error {
-	if slices.Contains(data, '.') {
-		var f float64
-		if err := json.Unmarshal(data, &f); err != nil {
+	if strings.ContainsRune(string(data), '.') {
+		parsed, err := ParseDecimal64p2(string(data))
+		if err != nil {
 			return err
 		}
-		*d = NewDecimal64p2FromFloat64(f)
-	} else {
-		var f int64
-		if err := json.Unmarshal(data, &f); err != nil {
-			return err
-		}
-		*d = Decimal64p2(f)
+		*d = parsed
+		return nil
 	}
+	cents, err := strconv.ParseInt(string(data), 10, 64)
+	if err != nil {
+		return err
+	}
+	*d = Decimal64p2(cents)
 	return nil
 }
 

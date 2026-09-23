@@ -2,8 +2,75 @@ package decimal
 
 import (
 	"encoding/json"
+	"math"
 	"testing"
 )
+
+func TestParseDecimal64p2ExactAndBounds(t *testing.T) {
+	for _, tc := range []struct {
+		input string
+		want  Decimal64p2
+	}{
+		{"0.1", 10},
+		{"-0", 0},
+		{"-0.00", 0},
+		{"+1.2", 120},
+		{"92233720368547758.07", math.MaxInt64},
+		{"-92233720368547758.08", math.MinInt64},
+	} {
+		got, err := ParseDecimal64p2(tc.input)
+		if err != nil || got != tc.want {
+			t.Errorf("ParseDecimal64p2(%q) = %d, %v; want %d", tc.input, got, err, tc.want)
+		}
+	}
+	for _, input := range []string{
+		"", "+", "-", ".1", "1.", "0.005", "1.234", "1e2", "NaN", "Inf", "-Inf",
+		"1.2.3", " 1", "1 ", "1a", "92233720368547758.08", "-92233720368547758.09",
+		"9223372036854775808", "-9223372036854775809",
+	} {
+		if got, err := ParseDecimal64p2(input); err == nil {
+			t.Errorf("ParseDecimal64p2(%q) = %d; want error", input, got)
+		}
+	}
+}
+
+func TestDecimal64p2StringBounds(t *testing.T) {
+	for _, tc := range []struct {
+		value Decimal64p2
+		want  string
+	}{
+		{math.MaxInt64, "92233720368547758.07"},
+		{math.MinInt64, "-92233720368547758.08"},
+	} {
+		if got := tc.value.String(); got != tc.want {
+			t.Errorf("String(%d) = %q; want %q", tc.value, got, tc.want)
+		}
+	}
+}
+
+func TestDecimal64p2JSONExactAndCents(t *testing.T) {
+	for _, tc := range []struct {
+		input string
+		want  Decimal64p2
+	}{
+		{"0.1", 10},
+		{"-92233720368547758.08", math.MinInt64},
+		{"92233720368547758.07", math.MaxInt64},
+		{"9223372036854775807", math.MaxInt64},
+		{"-9223372036854775808", math.MinInt64},
+	} {
+		var got Decimal64p2
+		if err := json.Unmarshal([]byte(tc.input), &got); err != nil || got != tc.want {
+			t.Errorf("Unmarshal(%q) = %d, %v; want %d", tc.input, got, err, tc.want)
+		}
+	}
+	for _, input := range []string{"0.005", "1e2", "9223372036854775808", "92233720368547758.08", `"1.23"`} {
+		got := Decimal64p2(123)
+		if err := json.Unmarshal([]byte(input), &got); err == nil || got != 123 {
+			t.Errorf("Unmarshal(%q) = %d, %v; want unchanged value and error", input, got, err)
+		}
+	}
+}
 
 func TestNewDecimal64p2(t *testing.T) {
 	var d Decimal64p2
